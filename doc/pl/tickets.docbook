@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<chapter id="ticketsChapter">
+	<title>System ticketów</title>
+	<section>
+		<title>Wprowadzenie</title>
+		<para>
+			Ten rozdział opisuje użyty w systemie
+			<productname>php-Booba</productname> system tzw. ticketów.
+		</para>
+	</section>
+	<section>
+		<title>Czym jest ticket?</title>
+		<para>
+			Jednym z najczęściej popełnianych przez programistów aplikacji WWW
+			jest błąd polegający na umieszczaniu nadmiarowych informacji w
+			linkach lub formularzach, których przesłanie przez użytkownika
+			generuje jakąś akcję zależną od uprawnień tego użytkownika.
+		</para>
+		<para>
+			Dla przykładu, poniżej przedstawiony został fragment kodu HTML
+			pewnej aplikacji WWW, odpowiedzialny za umożliwienie użytkownikowi
+			usuwanie produktów z bazy danych.
+		</para>
+		<screen>
+			Sepulka z kacieżą zielona &lt;a href="usun.php?id=123"&gt;usuń&lt;/a&gt;&lt;br&gt;
+			Sepulka z kacieżą czerwona &lt;a href="usun.php?id=154"&gt;usuń&lt;/a&gt;&lt;br&gt;
+			Sepulka z kacieżą biała &lt;a href="usun.php?id=21"&gt;usuń&lt;/a&gt;&lt;br&gt;
+			Sepulka z kacieżą zwykła &lt;a href="usun.php?id=432"&gt;usuń&lt;/a&gt;
+		</screen>
+		<para>
+			Oczywiście nie są to wszystkie produkty dostępne w systemie, jednak
+			użytkownik pracujący w tej w chwili w systemie powinien mieć
+			możliwość usunięcia jedynie tych produktów.
+		</para>
+		<para>
+			Umożliwienie kliknięcia użytkownikowi w link, w którym zapisany
+			jest wprost rodzaj żądania (w typ przypadku nazwa pliku
+			<filename>usun.php</filename> oraz wiele mówiąca nazwa pola
+			<emphasis>id</emphasis> w sposób jednoznaczny zdradzają intencje
+			programisty) powodują konieczność sprawdzenia po stronie aplikacji,
+			po odebraniu żądania, czy rzeczywiście dany użytkownik posiada
+			uprawnienia umożliwiające mu na usunięcie danego produktu (nic
+			przecież nie stoi na przeszkodzie, aby złośliwy użytkownik wpisał
+			bezpośrednio URL z id produktu, do którego nie posiada uprawnień).
+			Niestety programiści często zapominają o tym sprawdzeniu, czasem
+			zdarza się im też po prostu zrobić błąd w funkcji odpowiedzialnej
+			za sprawdzenie uprawnień.
+		</para>
+		<para>
+			Prostym rozwiązaniem, rozwiązującym problem sprawdzania uprawnień
+			użytkownika co żądanie jest pamiętanie po stronie serwera listy
+			akcji, na które w danej chwili aplikacja pozwala użytkownikowi.
+			Nadchodzące żądanie przed przetworzeniem powinno zostać najpierw
+			sprawdzone, czy zostało uprzednio zarejestrowane.
+		</para>
+		<para>
+			W podanym powyżej przykładzie wystarczy przechować w sesji
+			następującą tablicę:
+		</para>
+		<screen>
+			array(
+				array( 'action' => 'usun' , 'id' => 21 ) ,
+				array( 'action' => 'usun' , 'id' => 123 ) ,
+				array( 'action' => 'usun' , 'id' => 154 ) ,
+				array( 'action' => 'usun' , 'id' => 432 )
+			)
+		</screen>
+		<para>
+			W takim przypadku, po nadejściu żądania
+			<emphasis>usun.php?id=123</emphasis> system może szybko upewnić
+			się, iż możliwość wysłania takiego żądania została rzeczywiście
+			przedstawiona użytkownikowi, tak więc na pewno posiada on
+			uprawnienia do usunięcia wybranego produktu. Nadejście żądania z
+			<emphasis>id</emphasis> niewystępującym na liście powinno skutkować
+			informacją o błędzie, np.:
+		</para>
+		<screen>
+			Usuwanie produktu - brak uprawnień!
+		</screen>
+		<important>
+			<para>
+				Uwaga: ze względów bezpieczeństwa nie należy sprawdzać, czy
+				podany przez złośliwego użytkownika produkt rzeczywiście
+				istnieje w bazie i uzależniać od tego komunikatu błędu! Takie
+				postępowanie zwiększa ilość informacji włamywacza.
+			</para>
+		</important>
+		<para>
+			Paranoiczny twórca aplikacji WWW, jakim powinien być każdy
+			użytkownik systemu <productname>php-Booba</productname> powinien
+			mimo wszystko niechętnie spoglądać na linki pozostawiające
+			użytkownikowi zbyt dużą swobodę w manipulacji danymi przesyłanymi
+			do przeglądarki. W opisywanym wyżej przypadku użytkownik aplikacji
+			nabywa niepotrzebną mu wiedzę, iż usuwanie produktów następuje
+			poprzez plik <filename>usun.php</filename> oraz podanie
+			wewnętrznego identyfikatora produktu, który jest najprawdopodobniej
+			liczbą naturalną.
+		</para>
+		<para>
+			Wiedza taka nie jest potrzebna użytkownikowi aplikacji, a zwiększa
+			niebezpiecznie możliwości włamywacza czyhającego na każdą pomyłkę
+			programisty. Poniższy przykład ukazuje inne, bezpieczniejsze
+			podejście do generowanych użytkownikowi żądań:
+		</para>
+		<screen>
+			Sepulka z kacieżą zielona &lt;a href="index.php?tid=ewrr32"&gt;usuń&lt;/a&gt;&lt;br&gt;
+			Sepulka z kacieżą czerwona &lt;a href="index.php?tid=43jkfg"&gt;usuń&lt;/a&gt;&lt;br&gt;
+			Sepulka z kacieżą biała &lt;a href="index.php?tid=dsf9er0"&gt;usuń&lt;/a&gt;&lt;br&gt;
+			Sepulka z kacieżą zwykła &lt;a href="index.php?tid=fsd0fsd"&gt;usuń&lt;/a&gt;
+		</screen>
+		<para>
+			oraz odpowiadającą temu przykładowi tablicę przechowywaną w sesji:
+		</para>
+		<screen>
+			array(
+				'ewrr32' =>
+					array( 'action' => 'usun' , 'id' => 21 ) ,
+				'43jkfg' =>
+					array( 'action' => 'usun' , 'id' => 123 ) ,
+				'dsf9er0' =>
+					array( 'action' => 'usun' , 'id' => 154 ) ,
+				'fsd0fsd' =>
+					array( 'action' => 'usun' , 'id' => 432 )
+			)
+		</screen>
+		<para>
+			Żądania przedstawione użytkownikowi są dla niego jedynie bezładnym
+			zbitkiem liter i cyfr, natomiast aplikacja posiada pełną informacją
+			o rodzaju skojarzonej z tym ciągiem znaków akcji. W celu
+			zwiększenia poziomu bezpieczeństwa, aplikacja nie powinna
+			dwukrotnie przedstawiać użytkownikowi żądania z tym samym ciągiem
+			znaków (nawet tego samego), a tablica żądań, przechowywana po
+			stronie serwera, powinna być z każdym żądaniem czyszczona i
+			wypełniana nowymi akcjami od początku.
+		</para>
+		<para>
+			Na tym właśnie polega użyty w systemie
+			<productname>php-Booba</productname> system ticketów. Jest to klasa
+			odpowiadająca za przechowywanie tworzonych przez użytkownika
+			skojarzeń ciągów znaków i cyfr z akcjami, które powinny zostać
+			podjęte przez system po nadejściu związanych z tymi ciągami żądań.
+			System <productname>php-Booba</productname> został ponadto
+			rozwinięty w sposób umożliwiający automatyczne uruchamianie
+			skojarzonych z tymi ciągami akcji.
+		</para>
+		<para>
+			W literaturze poświęconej zagadnieniu ticketów, opisane przed chwilą
+			ciągi liter znaków i cyfr nazywane są właśnie ticketami, ze względu
+			na luźne skojarzenie ciągu z biletem, którego przedstawienie
+			umożliwia kontynuację podróży, którą jest w tym przypadku dalsza
+			praca z serwisem.
+		</para>
+	</section>
+	<section>
+		<title>Tworzenie ticketu</title>
+		<para>
+			Tickety w systemie <productname>php-Booba</productname>
+			przechowywane są w sesji. Za przetwarzanie tych danych
+			odpowiedzialny jest obiekt klasy
+			<emphasis>TicketService</emphasis>. Programista korzystający z
+			systemu <productname>php-Booba</productname> nie powinien
+			samodzielnie modyfikować przechowywanych w sesji ticketów.
+		</para>
+		<para>
+			System <productname>php-Booba</productname> podczas wykonywania
+			skryptu <productname>PHP</productname> przechowuje globalny obiekt
+			umożliwiający pracę z ticketami. Dostęp do tego obiektu uzyskuje
+			się poprzez wywołanie funkcji <emphasis>getTickets()</emphasis>.
+		</para>
+		<screen>
+			$tickets = &amp;getTickets();
+		</screen>
+		<important>
+			<screen>
+				Przy pobieraniu obiektu umożliwiającego pracę z obiektami
+				należy koniecznie pobrać wynik funkcji przez referencję, gdyż
+				tickety zapamiętane w obiekcie zapisywane są w sesji dopiero
+				podczas kończenia się wykonywania skryptu. Do tego czasu
+				przechowywane są one w globalnym obiekcie zwracanym przez
+				funkcję <emphasis>getTickets()</emphasis>.
+			</screen>
+		</important>
+		<para>
+			Klasa <emphasis>TicketService</emphasis> definiuje wiele funkcji,
+			lecz większość z nich używana jest jedynie przez silnik systemu
+			<productname>php-Booba</productname>. Programista powinien
+			korzystać jedynie z funkcji umożliwiających zdefiniowanie nowego
+			ticketu. Takie funkcje są dwie, jedna z nich pozwala programiście
+			na samodzielne podanie ciągu znaków definiującego ticket, druga
+			sama tworzy taki ciąg.
+		</para>
+		<para>
+			Do zdefiniowania ticketu bez podawania ciągu znaków definiującego
+			ticket służy metoda klasy TicketService o nazwie
+			<emphasis>addTicket</emphasis>.
+		</para>
+		<screen>
+			class TicketService
+			{
+				...
+
+				function addTicket( $valuesToStore , $group = NULL )
+				{
+					...
+				}
+			}
+		</screen>
+		<note>
+			<para>
+				Parametr <emphasis>$group</emphasis> jest opcjonalny i zostanie
+				szerzej omówiony w sekcji dotyczącej grup ticketów. Na teraz,
+				można przyjąć, iż może on zostać pominięty.
+			</para>
+		</note>
+		<para>
+			Parameter <emphasis>$valuesToStore</emphasis> musi być tablicą
+			asocjacyjną definiującą wartości cechujące akcję skojarzoną z
+			ticketem.
+		</para>
+		<important>
+			<para>
+				System <productname>php-Booba</productname> rezerwuje kilka
+				kluczy podawanej w pierwszym parametrze funkcji
+				<emphasis>addTicket()</emphasis> tablicy asocjacyjnej dla
+				swoich własnych potrzeb i nie powinny one być używane w innym
+				celu.
+			</para>
+			<para>
+				Najważniejszym z tych kluczy jest <emphasis>page</emphasis>.
+				Skojarzona z tym kluczem wartość definiuje nazwę podklasy
+				<emphasis>Page</emphasis>, która zostanie użyta do
+				przetworzenia żądania związanego z ticketem.
+			</para>
+			<para>
+				Zastrzeżonym kluczem jest też
+				<emphasis>ticket_group</emphasis>.  Wykorzystanie tego klucza
+				zostało szerzej opisane w sekcji dotyczącej grup ticketów.
+			</para>
+		</important>
+		<para>
+			Funkcja <emphasis>addTicket()</emphasis> zwraca ciąg znaków
+			definiujący ticket.  Może on zostać użyty na wyrenderowanej stronie
+			HTML.
+		</para>
+		<screen>
+			$tid = $tickets->addTicket(
+				array(
+					'page' => 'usun' ,
+					'id' => 123 ) );
+
+			$template->set_var( 'tid' , $tid' );
+
+			$template->fetch( 'usun_produkt.tpl' );
+		</screen>
+		<para>
+			Funkcja <emphasis>addExplicitTicket()</emphasis> umożliwia wybranie
+			przez programistę ciągu znaków definiującego ticket.
+		</para>
+		<screen>
+			class TicketService
+			{
+				...
+
+				function addExplicitTicket( $tid , $valuesToStore , $group = NULL )
+				{
+					...
+				}
+			}
+		</screen>
+		<para>
+			Funkcja <emphasis>addExplicitTicket()</emphasis> nie zwraca
+			wartości.
+		</para>
+	</section>
+	<section>
+		<title>Tickety statyczne</title>
+		<para></para>
+	</section>
+	<section>
+		<title>Grupy ticketów</title>
+		<para></para>
+	</section>
+</chapter>

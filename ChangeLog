@@ -1,0 +1,127 @@
+* 31.03.2005, version 0.8.1
+
+  Fixed bug in timestamp verification.
+
+
+* 07.03.2005, version 0.8.0
+
+  Static tickets don't clean stored ticket data.
+
+  Request arrays in Page classes are member fields. There's no need more
+  for propagating those arrays via all function calls.
+
+
+* 25.01.2005, version 0.7.2
+
+  Fixed bug with no ticket (empty string) pages access.
+
+  Passing saved request for functions determining whenever static ticket
+  for pages is allowed.
+
+  Extracting additional ticket info from ticket string.
+
+
+* 15.12.2004, version 0.7.1
+
+  Static tickets removed from example files.
+ 
+
+* 15.12.2004, version 0.7.0
+
+  dot - a plugin for template system for returning array element with
+  specified key.
+
+  Passing arrays for verifier by reference.
+
+  Static tickets are determined by destination page instead of config file.
+
+
+* 24.09.2004, version 0.6.0
+
+  Plugins in template system.
+
+  Ability for defining "soft" tickets in ticket class.
+
+
+* 30.08.2004, version 0.5.2
+
+  Bugfix in error capturing in database class.
+
+
+* 26.08.2004, version 0.5.1
+
+  Small fixes in regexps in verifier.
+
+  Documentation pl fixes.
+
+
+* 24.08.2004, version 0.5.0
+
+  Ability for determining database errors and notices.
+
+  Email address in verifier.
+
+  Date, time and timestamp in verifier.
+
+
+* 12.07.2004, version 0.4.0
+
+  CHECKBOX and FLOAT in verifier.
+
+  getOne, getFirst and getAssoc query functions in db class.
+
+  Possibility for adding explicit tickets.
+
+  Polish documentation - explanation of tickets.
+
+
+* 05.07.2004, version 0.3.1
+
+  Fixes in ticket handling.
+
+  Abstract base class for *Page classes.
+
+
+* 29.06.2004, version 0.3.0
+
+  Ability for defining static tickets in ticket service class.
+
+  shift and pop functions in template system.
+  
+  Fixes in reference objects handling.
+
+  Replacing double %% with single % in %-sprintf-like notation in database
+  queries.
+
+  Simple config file in example template added.
+
+
+* 29.06.2004, version 0.2.0
+
+  Small fixes.
+
+  Database query handling with %-sprintf-like notation.
+
+
+* 28.06.2004, version 0.1.1
+
+  Minor fixes in file including and error handling.
+
+
+* 28.06.2004, version 0.1.0
+
+  Template system from Firma Jakubiak's Atom Web CMS added.
+
+  Fixes in filenames.
+
+  Error handling functions.
+
+
+* 24.06.2004, version 0.0.1
+
+  INTEGER and EVERYTHING in verifier.
+
+  Tickets may be groupped.
+ 
+  My old sources released.
+

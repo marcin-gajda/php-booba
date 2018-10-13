@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<chapter id="introductionChapter">
+	<title>Wprowadzenie</title>
+	<para>
+		<productname>php-Booba</productname> jest zestawem wzajemnie
+		powiązanych klas ułatwiających i wspomagających szybkie tworzenie
+		bezpiecznych aplikacji w <productname>PHP</productname>.
+	</para>
+	<para>
+		Na <productname>php-Booba</productname> składają się następujące klasy:
+		<itemizedlist>
+			<listitem>
+				<para>
+					<emphasis>Config</emphasis> oraz <emphasis>ArrayConfig</emphasis>,
+					których obiekty odpowiedzialne są za konfigurację systemu
+					<productname>php-Booba</productname>.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>Verifier</emphasis> - klasa, której obiekty
+					umożliwiają weryfikację danych z przesyłanych przez
+					przeglądrkę formularzy.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>TicketService</emphasis> - obiekt tej klasy
+					odpowiada za obsługę systemu ticketów.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>BoobaDB</emphasis> - klasa ułatwiająca dostęp
+					oraz wykonywanie zapytań w bazie danych
+					<productname>PostgreSQL</productname>.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>Template</emphasis> - autorski system szablonów
+					oparty o ideę bloków oraz przetwarzanie funkcji i zmiennych
+					za pomocą Odwrotnej Notacji Polskiej.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>AbstractPage</emphasis> - bazowa klasa dla stron
+					HTML renderowanych przy pomocy systemu
+					<productname>php-Booba</productname>.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>Init</emphasis> - silnik systemu
+					<productname>php-Booba</productname>, główna klasa, której
+					obiekt odpowiedzialny jest za podejmowanie decyzji
+					dotyczących obsługi ticketów oraz renderowania stron.
+				</para>
+			</listitem>
+			<listitem>
+				<para>
+					<emphasis>error</emphasis> - właściwa dla systemu
+					<productname>php-Booba</productname> obsługa błędów
+					<productname>PHP</productname>.
+				</para>
+			</listitem>
+		</itemizedlist>
+	</para>
+</chapter>

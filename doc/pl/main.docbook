@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+<!ENTITY introductionChapter SYSTEM "introduction.docbook">
+<!ENTITY ticketsChapter SYSTEM "tickets.docbook">
+<!ENTITY templatesChapter SYSTEM "templates.docbook">
+]>
+<book lang="pl">
+	<bookinfo>
+		<title>Dokumentacja systemu php-Booba</title>
+	</bookinfo>
+	&introductionChapter;
+	&ticketsChapter;
+	&templatesChapter;
+</book>
